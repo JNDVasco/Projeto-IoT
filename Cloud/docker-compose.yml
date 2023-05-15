@@ -12,7 +12,7 @@ services:
   # InfluxDB
   # Main Database for the project
   influxdb:
-    container_name: IoT-influxdb2
+    container_name: iot-influxdb
     restart: unless-stopped
     image: influxdb:2.7
     volumes:
@@ -29,9 +29,9 @@ services:
   # Dashboard for the project
   grafana:
     image: grafana/grafana:9.5.2
-    container_name: grafana
+    container_name: iot-grafana
     restart: unless-stopped
-    #user: 1001:1001
+    user: 1000:1000
     volumes:
       - ./grafana/data:/var/lib/grafana
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini
@@ -47,7 +47,7 @@ services:
   # Data collector for the project
   telegraf:
     image: telegraf:1.26.2
-    container_name: telegraf
+    container_name: iot-telegraf
     restart: unless-stopped
     volumes:
       - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
@@ -56,7 +56,7 @@ services:
   # MQTT Broker for the project
   emqx:
     image: emqx/emqx:5.0.24
-    container_name: emqx
+    container_name: iot-emqx
     restart: unless-stopped
     ports:
       - 1883:1883
