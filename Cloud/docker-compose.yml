@@ -1,0 +1,83 @@
+# IoT Project - Cloud infrastructure
+# Services:
+#   - InfluxDB
+#   - Grafana
+#   - EMQX MQTT Broker
+#   - Telegraf
+#
+# ---------------------------------------------------------------------------- #
+version: '3'
+services:
+  # -------------------------------------------------------------------------- #
+  # InfluxDB
+  # Main Database for the project
+  influxdb:
+    container_name: IoT-influxdb2
+    restart: unless-stopped
+    image: influxdb:2.7
+    volumes:
+      - ./influx/data:/var/lib/influxdb2:rw
+    ports:
+      - 8086:8086
+    healthcheck:
+      test: "curl -f http://localhost:8086/ping"
+      interval: 5s
+      timeout: 10s
+      retries: 5
+  # -------------------------------------------------------------------------- #
+  # Grafana
+  # Dashboard for the project
+  grafana:
+    image: grafana/grafana:9.5.2
+    container_name: grafana
+    restart: unless-stopped
+    #user: 1001:1001
+    volumes:
+      - ./grafana/data:/var/lib/grafana
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+    ports:
+      - 3000:3000
+    healthcheck:
+      test: "curl -f http://localhost:3000/api/health"
+      interval: 5s
+      timeout: 10s
+      retries: 5
+  # -------------------------------------------------------------------------- #
+  # Telegraf
+  # Data collector for the project
+  telegraf:
+    image: telegraf:1.26.2
+    container_name: telegraf
+    restart: unless-stopped
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+  # -------------------------------------------------------------------------- #
+  # EMQX MQTT Broker
+  # MQTT Broker for the project
+  emqx:
+    image: emqx/emqx:5.0.24
+    container_name: emqx
+    restart: unless-stopped
+    ports:
+      - 1883:1883
+      - 8083:8083
+      - 8084:8084
+      - 8883:8883
+      - 18083:18083
+    volumes:
+      - ./emqx/data:/opt/emqx/data
+      - ./emqx/log:/opt/emqx/log
+
+    healthcheck:
+      test: ["CMD", "/opt/emqx/bin/emqx_ctl", "status"]
+      interval: 5s
+      timeout: 25s
+      retries: 5
+  # -------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
+# Main Network
+networks:
+  default:
+   name: IoTNetwork
+   # external: true
+# ---------------------------------------------------------------------------- #
