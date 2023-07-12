@@ -1,0 +1,32 @@
+{{ define "discord.print_alert" -}}
+  [{{title .Status}}] {{title .Labels.alertname }}
+  Labels:
+  {{ range .Labels.SortedPairs -}}
+  - {{ title  .Name }}: {{title  .Value }}
+  {{ end -}}
+  {{ if .Annotations -}}
+  ----------------------------------------------------------------
+    Annotations:
+    {{ range .Annotations.SortedPairs -}}
+    - {{ .Name }}: {{ .Value }}
+    {{ end -}}
+  {{ end -}}
+  {{ if .DashboardURL -}}
+    Go to dashboard: {{ .DashboardURL }}
+  {{- end }}
+{{- end }}
+
+{{ define "discord.message" -}}
+{{ if .Alerts.Firing -}}
+{{ len .Alerts.Firing }} firing alert(s):
+{{ range .Alerts.Firing }}
+{{ template "discord.print_alert" . }}
+{{ end -}}
+{{ end }}
+{{ if .Alerts.Resolved -}}
+{{ len .Alerts.Resolved }} resolved alert(s):
+{{ range .Alerts.Resolved }}
+{{ template "discord.print_alert" .}}
+{{ end -}}
+{{ end }}
+{{- end }}
