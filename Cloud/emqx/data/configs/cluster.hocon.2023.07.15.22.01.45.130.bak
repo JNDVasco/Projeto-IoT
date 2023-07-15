@@ -1,0 +1,4 @@
+authentication = []
+topic_metrics = [
+  {topic = "iot/air"}
+]

@@ -67,7 +67,8 @@ services:
     volumes:
       - ./emqx/data:/opt/emqx/data
       - ./emqx/log:/opt/emqx/log
-      # - ./emqx/etc:/opt/emqx/etc
+      - ./emqx/etc/emqx.conf:/opt/emqx/etc/emqx.com
+
 
     healthcheck:
       test: ["CMD", "/opt/emqx/bin/emqx_ctl", "status"]
@@ -75,6 +76,14 @@ services:
       timeout: 25s
       retries: 5
   # -------------------------------------------------------------------------- #
+  # Cloudflare Tunnel
+  tunnel:
+    container_name: iot-tunnel
+    image: cloudflare/cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=eyJhIjoiMTFlZDA3Njk4ZmIzNGMzMDk1MjhhNWI2ZGZhMWI5ZmUiLCJ0IjoiNTZiMmJiMWUtZDgwOC00YmVkLTgzMjctNmIxYmMzOTRjNmIzIiwicyI6IlpqbG1Nak0wWkRjdFpUYzBNeTAwTmpNMkxXRmpZalF0WW1GbU9USmtNV0ZtWlRobSJ9
 # ---------------------------------------------------------------------------- #
 # Main Network
 networks:
