@@ -83,8 +83,7 @@ static struct ctimer ct;
 static struct timer nt;
 /*-------------------------------------------------*/
 // This timer is just a simple heartbeat so we know
-// the node hasn't crashed like I wished I did into
-// a wall or something during this project
+// the node hasn't crashed 
 static void ctimer_callback(void *ptr)
 {
     leds_toggle(LEDS_RED); // Blink the LED
